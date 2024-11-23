@@ -30,5 +30,19 @@ router.route('/delete').delete((req, res) => {
         .catch(err => res.status(400).json('Error: ' + err));
 });
 
+// Check if username exists
+router.route('/check-username').post((req, res) => {
+    const { username } = req.body;
+
+    User.findOne({ username })
+        .then(user => {
+            if (user) {
+                return res.status(400).json('Username already taken');
+            }
+            res.json('Username is available');
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+
 
 module.exports = router;
