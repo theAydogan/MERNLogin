@@ -1,48 +1,100 @@
 const router = require('express').Router();
-let User = require('../models/user.model');
+const User = require('../models/user.model');
+const bcrypt = require('bcrypt');
 
-// GET all users
-router.route('/').get((req, res) => {
-    User.find()
-        .then(users => res.json(users))  // Send the users as JSON response
-        .catch(err => res.status(400).json('Error: ' + err));  // Handle any errors
-});
+// Register new user
+router.post('/add', async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
 
-// Create a new user 
-router.route('/add').post((req, res) => {
-    const { username } = req.body;  // Get the username from the request body
+    // Validation checks
+    if (!username || !email || !password) {
+      return res.status(400).json({ 
+        message: 'Please provide all required fields',
+        missing: {
+          username: !username,
+          email: !email,
+          password: !password
+        }
+      });
+    }
 
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ 
+        message: 'Email already registered',
+        field: 'email'
+      });
+    }
+
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername) {
+      return res.status(400).json({ 
+        message: 'Username already taken',
+        field: 'username'
+      });
+    }
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create new user
     const newUser = new User({
-        username,
+      username,
+      email,
+      password: hashedPassword
     });
 
-    newUser.save()
-        .then(() => res.json('User added!'))
-        .catch(err => res.status(400).json('Error: ' + err));
+    // Save user
+    await newUser.save();
+    res.json({ message: 'User registered successfully!' });
+
+  } catch (error) {
+    console.error('Server error:', error);
+    res.status(500).json({ 
+      message: 'Server error',
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
 });
 
-// Delete a user
-router.route('/delete').delete((req, res) => {
-    const username = req.body.username;
+// Login user
+router.post('/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
 
-    User.findOneAndDelete({ username: username })
-        .then(() => res.json('User deleted successfully.'))
-        .catch(err => res.status(400).json('Error: ' + err));
+    // Find user by username instead of email
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(400).json({ message: 'User not found' });
+    }
+
+    // Validate password
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
+      return res.status(400).json({ message: 'Invalid password' });
+    }
+
+    // Send success response
+    res.json({ 
+      message: 'Logged in successfully',
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email
+      }
+    });
+
+  } catch (error) {
+    console.error('Server error:', error);
+    res.status(500).json({ 
+      message: 'Server error',
+      error: error.message
+    });
+  }
 });
-
-// Check if username exists
-router.route('/check-username').post((req, res) => {
-    const { username } = req.body;
-
-    User.findOne({ username })
-        .then(user => {
-            if (user) {
-                return res.status(400).json('Username already taken');
-            }
-            res.json('Username is available');
-        })
-        .catch(err => res.status(400).json('Error: ' + err));
-});
-
 
 module.exports = router;

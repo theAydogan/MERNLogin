@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Optional custom styles */
-code {
-  @apply font-mono;
+body {
+  @apply bg-blue-500;
 }

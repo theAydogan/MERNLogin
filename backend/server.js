@@ -15,15 +15,7 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB database connection established"))
   .catch(err => console.error("MongoDB connection error:", err));
 
-const connection = mongoose.connection;
-
-connection.once('open', () => {
-    console.log("MongoDB database connection established");
-})
-
 const userRouter = require('./routes/users');
-
-
 
 app.use('/users', userRouter);
 
