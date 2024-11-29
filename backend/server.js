@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config(); // This loads the .env file
+const carRouter = require('./routes/cars');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,7 +19,7 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
 const userRouter = require('./routes/users');
 
 app.use('/users', userRouter);
-
+app.use('/cars', carRouter);
 app.listen(PORT, () => {
     console.log(`Server is running off of port: ${PORT}`);
 });
