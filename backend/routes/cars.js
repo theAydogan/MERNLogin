@@ -17,4 +17,13 @@ router.post('/add', async (req, res) => {
     }
 });
 
+router.get('/list', async (req, res) => {
+    try {
+        const cars = await Car.find();
+        res.json(cars);
+    } catch (error) {
+        res.status(400).json('Error: ' + error);
+    }
+});
+
 module.exports = router;

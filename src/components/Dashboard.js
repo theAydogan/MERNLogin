@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';  // Add useSelector
 import { logout } from '../redux/authSlice';  // Import logout action
 import Modal from './Modal';    
-
+import CarList from './CarList';
 
 function Dashboard() {
     const navigate = useNavigate();
@@ -58,6 +58,7 @@ function Dashboard() {
             <h2 className='text-2xl font-bold text-center mb-4 text-white'>
                 Welcome to the Dashboard {user.username}
             </h2>
+            <CarList carName={carName} carModel={carModel} carColor={carColor} />
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <h3 className='text-lg font-bold mb-4'>Add Car</h3>
                 <form className='flex flex-col gap-4 items-center justify-center border-2 border-gray-300 rounded-md p-4'>
