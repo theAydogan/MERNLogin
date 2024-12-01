@@ -1,39 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-function CarList() {
-    const [cars, setCars] = useState([]);  // Store all cars
-
-    // Fetch cars when component mounts
-    useEffect(() => {
-        const fetchCars = async () => {
-            try {
-                const response = await fetch('http://localhost:3000/cars/list');
-                const data = await response.json();
-                setCars(data);  // Store cars in state
-            } catch (error) {
-                console.error('Error fetching cars:', error);
-            }
-        };
-
-        fetchCars();
-    }, []);  // Empty array means run once when component mounts
-
+function CarList({ cars }) {
     return (
-        <div>
-            <table className='table table-striped table-bordered bg-white rounded shadow-sm w-100 mx-auto p-3'>
+        <div className="w-full max-w-[1600px] px-4 mx-auto">
+            <table className="w-full border-collapse border border-gray-300">
                 <thead>
                     <tr>
-                        <th className='font-weight-bold text-center'>Car Name</th>
-                        <th className='font-weight-bold text-center'>Car Model</th>
-                        <th className='font-weight-bold text-center'>Car Color</th>
+                        <th className="border border-gray-300 p-2">Car Name</th>
+                        <th className="border border-gray-300 p-2">Model</th>
+                        <th className="border border-gray-300 p-2">Color</th>
                     </tr>
                 </thead>
                 <tbody>
                     {cars.map((car, index) => (
                         <tr key={car._id || index}>
-                            <td>{car.carName}</td>
-                            <td>{car.carModel}</td>
-                            <td>{car.carColor}</td>
+                            <td className="border border-gray-300 p-2">{car.carName}</td>
+                            <td className="border border-gray-300 p-2">{car.carModel}</td>
+                            <td className="border border-gray-300 p-2">{car.carColor}</td>
                         </tr>
                     ))}
                 </tbody>
