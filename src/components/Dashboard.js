@@ -21,6 +21,7 @@ function Dashboard() {
     const [carColor, setCarColor] = useState('');
     const [cars, setCars] = useState([]);
     const user = useSelector((state) => state.auth.user);
+    const [editingCar, setEditingCar] = useState(null);
 
     useEffect(() => {
         fetchCars();
@@ -30,6 +31,23 @@ function Dashboard() {
         dispatch(logout());  // This will clear both Redux state and localStorage
         navigate('/');
     }
+
+    const handleDeleteCar = async (id) => {
+        try {
+            await fetch(`http://localhost:3000/cars/delete/${id}`, { method: 'DELETE' });
+            await fetchCars();
+        } catch (error) {
+            console.error('Error deleting car:', error);
+        }
+    };
+
+    const handleUpdateCar = (car) => {
+        setEditingCar(car);  // Store the car being edited
+        setCarName(car.carName);  // Pre-fill form
+        setCarModel(car.carModel);
+        setCarColor(car.carColor);
+        setIsModalOpen(true);
+    };
 
     const fetchCars = async () => {
         try {
@@ -58,18 +76,61 @@ function Dashboard() {
                     carColor
                 })
             });
-
+            
             if (response.ok) {
-                await fetchCars();  // Fetch updated list
-                
-                setCarName('');
-                setCarModel('');
-                setCarColor('');
-                setIsModalOpen(false);
+                await fetchCars();
             }
         } catch (error) {
             console.error('Error adding car:', error);
         }
+    };
+
+    const handleSubmit = async () => {
+        try {
+            if (editingCar) {
+                // Update existing car
+                const response = await fetch(`http://localhost:3000/cars/update/${editingCar._id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        carName,
+                        carModel,
+                        carColor
+                    })
+                });
+                
+                if (response.ok) {
+                    await fetchCars();
+                }
+            } else {
+                // Add new car
+                await handleAddCarSubmit();
+            }
+            
+            setEditingCar(null);  // Clear editing state
+            setCarName('');
+            setCarModel('');
+            setCarColor('');
+            setIsModalOpen(false);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    const getButtonText = () => {
+        if (editingCar) {
+            return 'Update Car';
+        }
+        return 'Add Car';
+    };
+
+    const getModalTitle = () => {
+        if (editingCar) {
+            return 'Update Car';
+        }
+        return 'Add Car';
     };
 
     return (
@@ -79,20 +140,35 @@ function Dashboard() {
             </h2>
             
             <div className="mt-20 w-full">
-                <CarList cars={cars} />
+                <CarList cars={cars} handleDeleteCar={handleDeleteCar} handleUpdateCar={handleUpdateCar} />
             </div>
 
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <div>
-                    <h3 className='text-lg font-bold mb-4'>Add Car</h3>
+                    <h3 className='text-lg font-bold mb-4'>
+                        {getModalTitle()}
+                    </h3>
                     <form className='flex flex-col gap-4 items-center justify-center border-2 border-gray-300 rounded-md p-4 w-full'>
                         <input className='border-2 border-gray-300 rounded-md p-2 w-full' type="text" name='carName' id='carName' value={carName} onChange={(e) => setCarName(e.target.value)} placeholder='Car Name' />
                         <input className='border-2 border-gray-300 rounded-md p-2 w-full' type="text" name='carModel' id='carModel' value={carModel} onChange={(e) => setCarModel(e.target.value)} placeholder='Car Model' />
                         <input className='border-2 border-gray-300 rounded-md p-2 w-full' type="text" name='carColor' id='carColor' value={carColor} onChange={(e) => setCarColor(e.target.value)} placeholder='Car Color' />
                         <label className='text-black hidden' id='successMessage'>Successfully added car: {carName}</label>
                     </form>
-                    <button onClick={handleAddCarSubmit} className='bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mx-auto block mt-4'>Add Car</button>
-                    <button onClick={() => setIsModalOpen(false)} className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mx-auto block mt-4'>Close</button>
+                    <button 
+                        onClick={handleSubmit} 
+                        className='bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mx-auto block mt-4'
+                    >
+                        {getButtonText()}
+                    </button>
+                    <button onClick={() => {
+                        setIsModalOpen(false);
+                        setEditingCar(null);
+                        setCarName('');
+                        setCarModel('');
+                        setCarColor('');
+                    }} className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mx-auto block mt-4'>
+                        Close
+                    </button>
                 </div>
             </Modal>
 
