@@ -65,51 +65,108 @@ function Login() {
 
   // Component UI
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <form className="w-80 p-6 rounded-lg bg-white shadow-lg" onSubmit={handleSubmit}>
-        <h2 className="text-2xl mb-6 text-center font-bold">Login</h2>
-        
-        {/* Username input field */}
-        <input
-          type="text"
-          placeholder="Username"
-          className="w-full mb-4 p-2 border rounded"
-          value={formData.username}
-          onChange={(e) => setFormData({...formData, username: e.target.value})}
-          required
-        />
-        
-        {/* Password input field */}
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full mb-6 p-2 border rounded"
-          value={formData.password}
-          onChange={(e) => setFormData({...formData, password: e.target.value})}
-          required
-          minLength={6}
-        />
-        
-        {/* Submit button */}
-        <button 
-          type="submit"
-          className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Sign In
-        </button>
-
-        {/* Sign up link section */}
-        <div className="mt-4 text-center">
-          <p className="text-gray-600">Don't have an account?</p>
-          <button
-            type="button"
-            onClick={() => navigate('/signup')}
-            className="text-blue-500 hover:text-blue-700 font-semibold"
-          >
-            Sign Up
-          </button>
+    <div className="relative min-h-screen flex">
+      {/* Left half - purple with wave */}
+      <div className="w-3/5 relative">
+        <div className="absolute inset-0">
+          <div className="relative w-full h-full">
+            <div className="absolute inset-0 bg-purple-800" />
+            <img 
+              src="/images/Alfa-HotWheels.png" 
+              alt="Alfa Hot Wheels"
+              className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay"
+            />
+            {/* Wave overlay */}
+            <svg
+              className="absolute bottom-0 w-full"
+              preserveAspectRatio="none"
+              viewBox="0 0 200 100"
+              xmlns="http://www.w3.org/2000/svg"
+              style={{ zIndex: 20 }}
+            >
+              <path
+                d="M0 50 
+                   Q 25 45, 50 50 
+                   T 100 50
+                   Q 125 45, 150 50
+                   T 200 50
+                   L 200 100 
+                   L 0 100 Z"
+                fill="white"
+              />
+            </svg>
+            
+          </div>
         </div>
-      </form>
+      </div>
+
+      {/* Right half - white background with form */}
+      <div className="w-2/5 bg-white flex items-center justify-center z-4 shadow-[-20px_0_30px_-15px_rgba(0,0,0,0.3)] h-screen">
+        <div className="w-2/3 p-8">
+          {/* Welcome message section */}
+          <div className="mb-16 text-center">
+            <h1 className="mb-6 text-4xl font-extrabold text-gray-900 md:text-6xl lg:text-7xl">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-500">
+                Hot Wheels
+              </span>
+              <br />
+              <span>Car Inventory System</span>
+            </h1>
+            <p className="text-xl font-normal text-gray-500 lg:text-2xl">
+              Please enter your details to access the garage.
+            </p>
+          </div>
+          
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Username input field */}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Username"
+                className="w-full p-3 border-b border-purple-800 bg-transparent focus:outline-none text-gray-800 placeholder-gray-500 transition-all duration-300 focus:border-b-2"
+                value={formData.username}
+                onChange={(e) => setFormData({...formData, username: e.target.value})}
+                required
+              />
+              <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-800 transition-all duration-300 group-focus-within:w-full" />
+            </div>
+            
+            {/* Password input field */}
+            <div className="relative">
+              <input
+                type="password"
+                placeholder="Password"
+                className="w-full p-3 border-b border-purple-800 bg-transparent focus:outline-none text-gray-800 placeholder-gray-500 transition-all duration-300 focus:border-b-2"
+                value={formData.password}
+                onChange={(e) => setFormData({...formData, password: e.target.value})}
+                required
+                minLength={6}
+              />
+              <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-800 transition-all duration-300 group-focus-within:w-full" />
+            </div>
+            
+            {/* Submit button */}
+            <button 
+              type="submit"
+              className="w-full p-3 bg-purple-800 text-white rounded-lg hover:bg-purple-900 transform transition-all duration-300 hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+            >
+              Sign In
+            </button>
+
+            {/* Sign up link section */}
+            <div className="mt-8 text-center">
+              <p className="text-gray-600 mb-2">Don't have an account?</p>
+              <button
+                type="button"
+                onClick={() => navigate('/signup')}
+                className="text-purple-800 hover:text-purple-900 font-semibold transition-colors duration-300 hover:underline underline-offset-4"
+              >
+                Sign Up
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

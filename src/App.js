@@ -10,7 +10,7 @@ import store from './redux/store';
 function App() {
   return (
     <Provider store={store}>
-      <div className="min-h-screen bg-blue-500">
+      <div className="min-h-screen bg-none">
         <BrowserRouter>
           <Navbar />
           <Routes>
