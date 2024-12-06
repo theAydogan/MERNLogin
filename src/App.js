@@ -6,13 +6,16 @@ import Dashboard from './components/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import { Provider } from 'react-redux';
 import store from './redux/store';
+import { useSelector } from 'react-redux';
 
 function App() {
+  const user = useSelector((state) => state.auth.user);
+
   return (
-    <Provider store={store}>
-      <div className="min-h-screen bg-none">
-        <BrowserRouter>
-          <Navbar />
+    <div className="min-h-screen bg-none flex flex-col">
+      <BrowserRouter>
+        {user && <Navbar />}
+        <div className="flex-grow">
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
@@ -25,10 +28,19 @@ function App() {
               } 
             />
           </Routes>
-        </BrowserRouter>
-      </div>
-    </Provider>
+        </div>
+        <footer className="text-center py-4 text-gray-600">
+          Created by Ahmet Aydogan
+        </footer>
+      </BrowserRouter>
+    </div>
   );
 }
 
-export default App;
+export default function AppWrapper() {
+  return (
+    <Provider store={store}>
+      <App />
+    </Provider>
+  );
+}
