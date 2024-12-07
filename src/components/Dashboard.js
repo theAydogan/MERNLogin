@@ -9,8 +9,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';  // Add useSelector
 import { logout } from '../redux/authSlice';  // Import logout action
-import Modal from './Modal';    
+import Modal from './Modal';
 import CarList from './CarList';
+import VerticalMenu from './VerticalMenu';  // Import the new component
+
 
 function Dashboard() {
     const navigate = useNavigate();
@@ -76,7 +78,7 @@ function Dashboard() {
                     carColor
                 })
             });
-            
+
             if (response.ok) {
                 await fetchCars();
             }
@@ -100,7 +102,7 @@ function Dashboard() {
                         carColor
                     })
                 });
-                
+
                 if (response.ok) {
                     await fetchCars();
                 }
@@ -108,7 +110,7 @@ function Dashboard() {
                 // Add new car
                 await handleAddCarSubmit();
             }
-            
+
             setEditingCar(null);  // Clear editing state
             setCarName('');
             setCarModel('');
@@ -134,53 +136,53 @@ function Dashboard() {
     };
 
     return (
-        <div className='flex flex-col items-center pt-10 w-full'>
-            <h2 className='text-5xl font-bold text-center mb-8 text-white'>
-                Welcome to the Dashboard {user.username}
-            </h2>
-            
-            <div className="mt-20 w-full">
-                <CarList cars={cars} handleDeleteCar={handleDeleteCar} handleUpdateCar={handleUpdateCar} />
-            </div>
+        <div className='flex min-h-screen bg-gray-600'>
+            {/* Vertical Menu */}
+            <VerticalMenu onLogout={handleLogout} username={user.username} />
 
-            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                <div>
-                    <h3 className='text-lg font-bold mb-4'>
-                        {getModalTitle()}
-                    </h3>
-                    <form className='flex flex-col gap-4 items-center justify-center border-2 border-gray-300 rounded-md p-4 w-full'>
-                        <input className='border-2 border-gray-300 rounded-md p-2 w-full' type="text" name='carName' id='carName' value={carName} onChange={(e) => setCarName(e.target.value)} placeholder='Car Name' />
-                        <input className='border-2 border-gray-300 rounded-md p-2 w-full' type="text" name='carModel' id='carModel' value={carModel} onChange={(e) => setCarModel(e.target.value)} placeholder='Car Model' />
-                        <input className='border-2 border-gray-300 rounded-md p-2 w-full' type="text" name='carColor' id='carColor' value={carColor} onChange={(e) => setCarColor(e.target.value)} placeholder='Car Color' />
-                        <label className='text-black hidden' id='successMessage'>Successfully added car: {carName}</label>
-                    </form>
-                    <button 
-                        onClick={handleSubmit} 
-                        className='bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mx-auto block mt-4'
-                    >
-                        {getButtonText()}
-                    </button>
-                    <button onClick={() => {
-                        setIsModalOpen(false);
-                        setEditingCar(null);
-                        setCarName('');
-                        setCarModel('');
-                        setCarColor('');
-                    }} className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mx-auto block mt-4'>
-                        Close
-                    </button>
+            {/* Main Content */}
+            <div className='flex-grow flex flex-col items-center pt-10'>
+                <h2 className='text-5xl font-bold text-center mb-8 text-white'>
+                    Welcome to the Dashboard {user.username}
+                </h2>
+                
+                <div className="mt-20 w-full">
+                    <CarList cars={cars} handleDeleteCar={handleDeleteCar} handleUpdateCar={handleUpdateCar} />
                 </div>
-            </Modal>
 
-            <div className='flex flex-col items-center justify-center'>
-                <button onClick={handleAddCar} className='bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 mx-auto block mt-4'>Add Car</button>
+                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                    <div>
+                        <h3 className='text-lg font-bold mb-4'>
+                            {getModalTitle()}
+                        </h3>
+                        <form className='flex flex-col gap-4 items-center justify-center border-2 border-gray-300 rounded-md p-4 w-full'>
+                            <input className='border-2 border-gray-300 rounded-md p-2 w-full' type="text" name='carName' id='carName' value={carName} onChange={(e) => setCarName(e.target.value)} placeholder='Car Name' />
+                            <input className='border-2 border-gray-300 rounded-md p-2 w-full' type="text" name='carModel' id='carModel' value={carModel} onChange={(e) => setCarModel(e.target.value)} placeholder='Car Model' />
+                            <input className='border-2 border-gray-300 rounded-md p-2 w-full' type="text" name='carColor' id='carColor' value={carColor} onChange={(e) => setCarColor(e.target.value)} placeholder='Car Color' />
+                            <label className='text-black hidden' id='successMessage'>Successfully added car: {carName}</label>
+                        </form>
+                        <button 
+                            onClick={handleSubmit} 
+                            className='bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mx-auto block mt-4'
+                        >
+                            {getButtonText()}
+                        </button>
+                        <button onClick={() => {
+                            setIsModalOpen(false);
+                            setEditingCar(null);
+                            setCarName('');
+                            setCarModel('');
+                            setCarColor('');
+                        }} className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mx-auto block mt-4'>
+                            Close
+                        </button>
+                    </div>
+                </Modal>
+
+                <div className='flex flex-col items-center justify-center'>
+                    <button onClick={handleAddCar} className='bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 mx-auto block mt-4'>Add Car</button>
+                </div>
             </div>
-            <button
-                onClick={handleLogout}
-                className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mx-auto block'
-            >
-                Logout
-            </button>
         </div>
     );
 }

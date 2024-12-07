@@ -12,9 +12,9 @@ function App() {
   const user = useSelector((state) => state.auth.user);
 
   return (
-    <div className="min-h-screen bg-none flex flex-col">
+    <div className="min-h-screen flex flex-col">
       <BrowserRouter>
-        {user && <Navbar />}
+        {user && window.location.pathname !== '/dashboard' && <Navbar />}
         <div className="flex-grow">
           <Routes>
             <Route path="/" element={<Login />} />
