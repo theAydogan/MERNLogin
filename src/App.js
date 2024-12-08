@@ -19,19 +19,16 @@ function App() {
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
-            <Route 
-              path="/dashboard" 
+            <Route
+              path="/dashboard"
               element={
                 <ProtectedRoute>
                   <Dashboard />
                 </ProtectedRoute>
-              } 
+              }
             />
           </Routes>
         </div>
-        <footer className="text-center py-4 text-gray-600">
-          Created by Ahmet Aydogan
-        </footer>
       </BrowserRouter>
     </div>
   );
