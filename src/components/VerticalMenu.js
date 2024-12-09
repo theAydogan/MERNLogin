@@ -4,7 +4,7 @@ import { faHome, faUser, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg
 
 function VerticalMenu({ onLogout, username }) {
   return (
-    <div className='w-1/5 bg-gray-800 shadow-md p-4'>
+    <div className='w-1/5 shadow-md p-4 mt-4 mb-4 ml-4' style={{ backgroundColor: '#181828' }}>
       <h3 className='text-xl font-bold mb-4 text-white'>Menu</h3>
       
       {/* Profile Image and Username */}
